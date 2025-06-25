@@ -1,0 +1,14 @@
+{
+  "name": "batepapo",
+  "version": "1.0.0",
+  "main": "batepapo.js",
+  "scripts": {
+    "start": "node batepapo.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
