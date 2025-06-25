@@ -17,7 +17,7 @@ app.use(cookieSession({
 
 let usuariosCadastrados = [];
 let mensagensDoChat = [];
-const assuntosDisponiveis = ['Hardware Geral', 'Placas de Vídeo', 'Processadores', 'Montagem de PCs', 'Software e Programação', 'Periféricos'];
+const assuntosDisponiveis = ['Futebol', 'Fórmula 1', 'Basquete', 'Vôlei', 'Tênis'];
 
 function autenticar(req, res, next) {
     if (req.session.usuarioAutenticado) {
@@ -110,5 +110,11 @@ app.post('/postarMensagem', autenticar, (req, res) => {
         res.redirect(`/chat?assunto=${assunto}`);
     }
 });
+
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => {
+        console.log(`Servidor rodando em http://localhost:${port}`);
+    });
+}
 
 module.exports = app;
