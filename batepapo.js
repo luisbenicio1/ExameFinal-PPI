@@ -1,24 +1,69 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const frontend = require('./frontend');
 
 const app = express();
 const port = 3000;
 
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(cookieSession({
+    name: 'session',
+    keys: ['chave-secreta-muito-segura-para-criptografar'],
+    maxAge: 30 * 60 * 1000
+}));
 
 let usuariosCadastrados = [];
 let mensagensDoChat = [];
 const assuntosDisponiveis = ['Hardware Geral', 'Placas de Vídeo', 'Processadores', 'Montagem de PCs', 'Software e Programação', 'Periféricos'];
 
+function autenticar(req, res, next) {
+    if (req.session.usuarioAutenticado) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
+}
+
 app.get('/', (req, res) => {
-    res.send(frontend.gerarPaginaMenu());
+    res.redirect('/login');
 });
 
-app.get('/cadastroUsuario', (req, res) => {
+app.get('/login', (req, res) => {
+    res.send(frontend.gerarPaginaLogin());
+});
+
+app.post('/login', (req, res) => {
+    const { usuario, senha } = req.body;
+    if (usuario === 'admin' && senha === 'admin') {
+        req.session.usuarioAutenticado = true;
+        res.cookie('ultimoAcesso', new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }), {
+            maxAge: 900000000,
+            httpOnly: true
+        });
+        res.redirect('/menu');
+    } else {
+        res.send(frontend.gerarPaginaLogin('Usuário ou senha inválida!'));
+    }
+});
+
+app.get('/logout', (req, res) => {
+    req.session = null;
+    res.redirect('/login');
+});
+
+app.get('/menu', autenticar, (req, res) => {
+    const ultimoAcesso = req.cookies.ultimoAcesso || 'Primeiro acesso!';
+    res.send(frontend.gerarPaginaMenu(ultimoAcesso));
+});
+
+app.get('/cadastroUsuario', autenticar, (req, res) => {
     res.send(frontend.gerarFormularioCadastro(assuntosDisponiveis));
 });
 
-app.post('/cadastrarUsuario', (req, res) => {
+app.post('/cadastrarUsuario', autenticar, (req, res) => {
     const { nome, dataNascimento, nickname, assunto } = req.body;
     const erros = {};
 
@@ -35,11 +80,11 @@ app.post('/cadastrarUsuario', (req, res) => {
     }
 });
 
-app.get('/selecionarAssunto', (req, res) => {
+app.get('/selecionarAssunto', autenticar, (req, res) => {
     res.send(frontend.gerarPaginaSelecaoAssunto(assuntosDisponiveis));
 });
 
-app.get('/chat', (req, res) => {
+app.get('/chat', autenticar, (req, res) => {
     const { assunto } = req.query;
     if (!assunto || !assuntosDisponiveis.includes(assunto)) {
         res.redirect('/selecionarAssunto');
@@ -48,7 +93,7 @@ app.get('/chat', (req, res) => {
     res.send(frontend.gerarPaginaChat(assunto, usuariosCadastrados, mensagensDoChat));
 });
 
-app.post('/postarMensagem', (req, res) => {
+app.post('/postarMensagem', autenticar, (req, res) => {
     const { usuario: nickname, mensagem, assunto } = req.body;
 
     if (!nickname || !mensagem) {
