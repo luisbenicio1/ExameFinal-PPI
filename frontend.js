@@ -1,37 +1,4 @@
-function gerarPaginaLogin(erro = '')
-{
-    let html = `
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <title>Login - Bate-papo WEB</title>
-        <style>
-            body { font-family: sans-serif; text-align: center; margin-top: 50px; }
-            fieldset { width: 300px; margin: auto; }
-            .error { color: red; }
-        </style>
-    </head>
-    <body>
-        <h1>Bate-papo WEB</h1>
-        <form action="/login" method="POST">
-            <fieldset>
-                <legend>Acesso ao Sistema</legend>
-                <p>Usuário: <input type="text" name="usuario"></p>
-                <p>Senha: <input type="password" name="senha"></p>
-                ${erro ? `<p class="error">${erro}</p>` : ''}
-                <button type="submit">Entrar</button>
-            </fieldset>
-        </form>
-        <p><small>(Utilize o conceito de sessão para manter o login válido por 30 minutos)</small></p>
-    </body>
-    </html>
-    `;
-    return html;
-}
-
-function gerarPaginaMenu(ultimoAcesso)
-{
+function gerarPaginaMenu() {
     let html = `
     <!DOCTYPE html>
     <html lang="pt-BR">
@@ -41,21 +8,18 @@ function gerarPaginaMenu(ultimoAcesso)
     </head>
     <body>
         <h1>Menu Principal</h1>
-        <p>Seu último acesso foi em: ${ultimoAcesso}</p>
+        <p>Bem-vindo ao sistema de bate-papo!</p>
         <ul>
             <li><a href="/cadastroUsuario">Cadastro de Usuários</a></li>
             <li><a href="/selecionarAssunto">Bate-papo</a></li>
         </ul>
-        <br>
-        <a href="/logout">Sair do Sistema</a>
     </body>
     </html>
     `;
     return html;
 }
 
-function gerarFormularioCadastro(assuntosDisponiveis, erros = {}, valores = {})
-{
+function gerarFormularioCadastro(assuntosDisponiveis, erros = {}, valores = {}) {
     let optionsAssuntos = assuntosDisponiveis.map(assunto =>
         `<option value="${assunto}" ${valores.assunto === assunto ? 'selected' : ''}>${assunto}</option>`
     ).join('');
@@ -94,15 +58,14 @@ function gerarFormularioCadastro(assuntosDisponiveis, erros = {}, valores = {})
             <button type="submit">Cadastrar</button>
         </form>
         <br>
-        <a href="/menu">Voltar ao Menu</a>
+        <a href="/">Voltar ao Menu</a>
     </body>
     </html>
     `;
     return html;
 }
 
-function gerarListaUsuarios(usuariosCadastrados)
-{
+function gerarListaUsuarios(usuariosCadastrados) {
     let linhasTabela = usuariosCadastrados.map(user => `
         <tr>
             <td>${user.nome}</td>
@@ -136,14 +99,13 @@ function gerarListaUsuarios(usuariosCadastrados)
         <br>
         <a href="/cadastroUsuario">Cadastrar Novo Usuário</a>
         <br>
-        <a href="/menu">Voltar ao Menu</a>
+        <a href="/">Voltar ao Menu</a>
     </body>
     </html>
     `;
 }
 
-function gerarPaginaSelecaoAssunto(assuntosDisponiveis)
-{
+function gerarPaginaSelecaoAssunto(assuntosDisponiveis) {
     let optionsAssuntos = assuntosDisponiveis.map(assunto =>
         `<option value="${assunto}">${assunto}</option>`
     ).join('');
@@ -165,14 +127,13 @@ function gerarPaginaSelecaoAssunto(assuntosDisponiveis)
             <button type="submit">Entrar na Sala</button>
         </form>
         <br>
-        <a href="/menu">Voltar ao Menu</a>
+        <a href="/">Voltar ao Menu</a>
     </body>
     </html>
     `;
 }
 
-function gerarPaginaChat(assunto, usuariosCadastrados, mensagensDoChat, erros = {})
-{
+function gerarPaginaChat(assunto, usuariosCadastrados, mensagensDoChat, erros = {}) {
     const usuariosDoAssunto = usuariosCadastrados.filter(u => u.assunto === assunto);
     const mensagensDoAssunto = mensagensDoChat.filter(m => m.assunto === assunto);
 
@@ -226,14 +187,13 @@ function gerarPaginaChat(assunto, usuariosCadastrados, mensagensDoChat, erros = 
         <br>
         <a href="/selecionarAssunto">Trocar de Sala</a>
         <br>
-        <a href="/menu">Voltar ao Menu Principal</a>
+        <a href="/">Voltar ao Menu Principal</a>
     </body>
     </html>
     `;
 }
 
 module.exports = {
-    gerarPaginaLogin,
     gerarPaginaMenu,
     gerarFormularioCadastro,
     gerarListaUsuarios,
