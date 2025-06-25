@@ -1,16 +1,5 @@
 {
-  "name": "batepapo",
-  "version": "1.0.0",
-  "main": "batepapo.js",
-  "scripts": {
-    "start": "node batepapo.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2",
-    "cookie-parser": "^1.4.6",
     "cookie-session": "^2.1.0"
   }
 }
