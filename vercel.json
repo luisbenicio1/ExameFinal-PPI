@@ -1,7 +1,6 @@
 {
   "name": "Batepapo - ExameFinal",
   "version": "1.0.0",
-  "main": "batepapo.js",
   "scripts": {
     "start": "node batepapo.js"
   },
