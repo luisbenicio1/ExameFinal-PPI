@@ -1,15 +1,15 @@
 {
-  "name": "Batepapo - ExameFinal",
-  "version": "1.0.0",
-  "scripts": {
-    "start": "node batepapo.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "cookie-parser": "^1.4.6",
-    "express": "^4.19.2",
-    "express-session": "^1.18.0"
-  }
+  "version": 2,
+  "builds": [
+    {
+      "src": "batepapo.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/batepapo.js"
+    }
+  ]
 }
